@@ -1,32 +1,28 @@
-import React from "react";
+import React, {useState} from "react";
 
-class Search extends React.Component {
+const Search = (props) => {
 
-    state = {
-        search: '',
-        type: 'all'
+    const {searchMovies = Function.prototype} = props;
+    
+    const [search, setSearch] = useState('');
+    const [type, setType] = useState('all');
 
-    }
-
-    handleKey = (event, search) => {
+    const handleKey = (event) => {
         if (event.key === 'Enter') {
-            this.props.searchMovies(this.state.search);
+            searchMovies(search, type);
         }
       
     }
 
-    isButtonDisabled = () => {
-        return this.state.search.trim() === '';
-      };
+    const isButtonDisabled = search.trim() === '';
 
-    handleFilter = (event) => {
-        this.setState(() => ({type: event.target.dataset.type}), () => {
-            this.props.searchMovies(this.state.search, this.state.type);
-        });
-       
+    const handleFilter = (event) => {
+
+        setType(event.target.dataset.type);
+        searchMovies(search, event.target.dataset.type);     
     };
 
-    render() {
+   
         return (
             <div className="row">
 
@@ -35,30 +31,30 @@ class Search extends React.Component {
                         placeholder="search"
                         type="search"
                         className="validate"
-                        value={this.state.search}
-                        onChange={(e) => this.setState({ search: e.target.value })}
-                        onKeyDown={this.handleKey}
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        onKeyDown={handleKey}
                     />
-                    <button className="btn #2196f3 blue search-btn" onClick={() => this.props.searchMovies(this.state.search, this.state.type)} disabled={this.isButtonDisabled()}>Search</button>
+                    <button className="btn #2196f3 blue search-btn" onClick={() => searchMovies(search, type)} disabled={isButtonDisabled}>Search</button>
                 </div>
                 <div>
                     <label>
-                        <input className="with-gap" name="type" type="radio" data-type='all' onChange={this.handleFilter}  checked={this.state.type === 'all'} disabled={this.isButtonDisabled()} />
+                        <input className="with-gap" name="type" type="radio" data-type='all' onChange={handleFilter}  checked={type === 'all'} disabled={isButtonDisabled} />
                         <span>All</span>
                     </label>
                     <label>
-                        <input className="with-gap" name="type" type="radio" data-type='movie' onChange={this.handleFilter} checked={this.state.type === 'movie'} disabled={this.isButtonDisabled()} />
+                        <input className="with-gap" name="type" type="radio" data-type='movie' onChange={handleFilter} checked={type === 'movie'} disabled={isButtonDisabled} />
                         <span>Movies only</span>
                     </label>
                     <label>
-                        <input className="with-gap" name="type" type="radio" data-type='series'onChange={this.handleFilter}  checked={this.state.type === 'series'} disabled={this.isButtonDisabled()} />
+                        <input className="with-gap" name="type" type="radio" data-type='series'onChange={handleFilter}  checked={type === 'series'} disabled={isButtonDisabled}/>
                         <span>Series only</span>
                     </label>
                 </div>
             </div>
 
         )
-    }
+    
 }
 
 export { Search }
